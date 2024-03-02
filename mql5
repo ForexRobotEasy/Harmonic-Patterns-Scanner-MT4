@@ -1,0 +1,148 @@
+
+// Harmonic Patterns Scanner MT4
+// Developer: Forex Robot Easy Team
+// Website: forexroboteasy.com
+
+// Include necessary libraries and functions
+#include <Trade\Trade.mqh>
+#include <Series\Series.mqh>
+#include <Arrays\Arrays.mqh>
+
+// Define constants
+#define MAX_PATTERNS 100 // Maximum number of patterns to be detected
+#define ENTRY_BUFFER 10 // Buffer for entry points calculation
+#define SL_BUFFER 20 // Buffer for stop-loss calculation
+#define TP_BUFFER 20 // Buffer for take-profit calculation
+
+// Define global variables
+CTrade trade; // Trading object
+CSeries series; // Series object
+CArray<double> harmonicPatterns[MAX_PATTERNS]; // Array to store detected harmonic patterns
+int patternCount = 0; // Counter for the number of detected patterns
+
+// Function to scan and analyze price data to identify harmonic patterns
+void ScanAndAnalyzePatterns()
+{
+    // Clear previously detected patterns
+    ArrayResize(harmonicPatterns, 0);
+    patternCount = 0;
+
+    // Define variables for pattern detection
+    double pattern[MAX_PATTERNS][5]; // Array to store detected pattern points
+    int patternIndex = 0; // Index for storing pattern points
+    int startIndex = 0; // Index for searching pattern points
+
+    // Loop through price data to identify patterns
+    for (int i = ENTRY_BUFFER; i < series.Total(); i++)
+    {
+        // Check if a pattern is detected
+        if (IsPatternDetected(i))
+        {
+            // Store pattern points in the array
+            pattern[patternIndex][0] = series.High[i];
+            pattern[patternIndex][1] = series.High[i - ENTRY_BUFFER];
+            pattern[patternIndex][2] = series.Low[i];
+            pattern[patternIndex][3] = series.Low[i - ENTRY_BUFFER];
+            pattern[patternIndex][4] = series.Close[i];
+
+            patternIndex++;
+            if (patternIndex >= MAX_PATTERNS)
+                break;
+        }
+    }
+
+    // Store detected patterns in the global array
+    for (int j = 0; j < patternIndex; j++)
+    {
+        harmonicPatterns[patternCount].Resize(0);
+        for (int k = 0; k < 5; k++)
+            harmonicPatterns[patternCount].Add(pattern[j][k]);
+        patternCount++;
+    }
+}
+
+// Function to check if a pattern is detected
+bool IsPatternDetected(int index)
+{
+    // Implement pattern detection logic here
+    // Return true if a pattern is detected, false otherwise
+}
+
+// Function to determine the optimal entry points for trading based on identified harmonic patterns
+double CalculateEntryPoints(int patternIndex)
+{
+    // Implement entry points calculation logic here
+    // Return the calculated entry point
+}
+
+// Function to calculate and set appropriate stop-loss levels for each trade
+double CalculateStopLoss(int patternIndex)
+{
+    // Implement stop-loss calculation logic here
+    // Return the calculated stop-loss level
+}
+
+// Function to calculate and set take-profit levels for each trade
+double CalculateTakeProfit(int patternIndex)
+{
+    // Implement take-profit calculation logic here
+    // Return the calculated take-profit level
+}
+
+// Function to display the identified harmonic patterns, entry points, stop-losses, and take-profits
+void DisplayPatterns()
+{
+    // Implement code to display the identified patterns, entry points, stop-losses, and take-profits
+}
+
+// Function to customize settings such as timeframes, currency pairs, and harmonic pattern parameters
+void CustomizeSettings()
+{
+    // Implement code to allow customization of settings
+}
+
+// Function to optimize the code and minimize resource usage
+void OptimizeCode()
+{
+    // Implement code optimization logic here
+}
+
+// Function to handle errors and display error messages or notifications
+void HandleErrors()
+{
+    // Implement error handling logic here
+}
+
+// Main function
+void OnStart()
+{
+    // Initialize series and trade objects
+    series.Initialize(_Symbol, _Period);
+    trade.Initialize();
+
+    // Scan and analyze patterns
+    ScanAndAnalyzePatterns();
+
+    // Calculate entry points, stop-losses, and take-profits for each pattern
+    for (int i = 0; i < patternCount; i++)
+    {
+        double entry = CalculateEntryPoints(i);
+        double stopLoss = CalculateStopLoss(i);
+        double takeProfit = CalculateTakeProfit(i);
+
+        // Open trade using calculated entry point, stop-loss, and take-profit
+        trade.Buy(entry, stopLoss, takeProfit);
+    }
+
+    // Display the identified patterns, entry points, stop-losses, and take-profits
+    DisplayPatterns();
+
+    // Customize settings
+    CustomizeSettings();
+
+    // Optimize code
+    OptimizeCode();
+
+    // Handle errors
+    HandleErrors();
+}
